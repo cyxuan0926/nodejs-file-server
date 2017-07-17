@@ -26,12 +26,14 @@ const storage = multer.diskStorage({
         else cb(new Error('unallowed file type'), false);
     },
     limits = { fileSize: 1024 * 1000, parts: 9 },
-
+ 
     upload = multer({
         storage: storage,
         fileFilter: fileFilter,
         limits: limits
     });
+
+const PORT = 1339;
 
 app.use(express.static(__dirname + '/public'));
 
@@ -44,10 +46,10 @@ app.post('/profile', function(req, res) {
             return;
         }
 
-        res.send({ code: 200, status: 'SUCCESS' });
+        res.send({ code: 200, status: 'SUCCESS', url: `http://${req.ip.substr(req.ip.lastIndexOf(':') + 1)}:${PORT}/avatars/${req.file.filename}` });
     });
 });
 
-app.listen(1339, () => {
-    logger.info('app server listening on port 1339');
+app.listen(PORT, () => {
+    logger.info(`app server listening on port ${PORT}`);
 });
