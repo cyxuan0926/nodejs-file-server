@@ -46,7 +46,7 @@ app.post('/profile', function(req, res) {
             return;
         }
 
-        res.send({ code: 200, status: 'SUCCESS', url: `http://${req.ip.substr(req.ip.lastIndexOf(':') + 1)}:${PORT}/avatars/${req.file.filename}` });
+        res.send({ code: 200, status: 'SUCCESS', url: `http://${req.hostname}:${PORT}/avatars/${req.file.filename}` });
     });
 });
 
