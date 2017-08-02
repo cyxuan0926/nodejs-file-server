@@ -37,6 +37,7 @@ const PORT = 1339;
 
 app.use(express.static(__dirname + '/public'));
 
+// upload avatar
 const uploadAvatar = upload.single('avatar');
 app.post('/profile', function(req, res) {
     uploadAvatar(req, res, (err) => {
@@ -50,6 +51,19 @@ app.post('/profile', function(req, res) {
     });
 });
 
+// upload topic image
+const uploadTopicImage = upload.single('topic');
+app.post('/topics', function(req, res) {
+    uploadTopicImage(req, res, (err) => {
+        if (err) {
+            logger.error(err.message);
+            res.status(500).send({ code: 500, status: 'ERROR', message: err.message });
+            return;
+        }
+
+        res.send({ code: 200, status: 'SUCCESS', url: `http://${req.hostname}:${PORT}/topics/${req.file.filename}` });
+    });
+});
 app.listen(PORT, () => {
     logger.info(`app server listening on port ${PORT}`);
 });
