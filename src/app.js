@@ -63,6 +63,7 @@ app.post('/profile', function(req, res) {
       return;
     }
 
+    logger.info(`avatar: ${req.file.fieldname} was saved`);
     res.send({ code: 200, status: 'SUCCESS', url: `http://${req.hostname}:${PORT}/avatars/${req.file.filename}` });
   });
 });
@@ -75,7 +76,8 @@ app.post('/topics', function(req, res) {
       res.status(200).send({ code: 500, status: 'ERROR', message: err.message });
       return;
     }
-
+    
+    logger.info(`topic: ${req.file.fieldname} was saved`);
     res.send({ code: 200, status: 'SUCCESS', url: `http://${req.hostname}:${PORT}/topics/${req.file.filename}` });
   });
 });
