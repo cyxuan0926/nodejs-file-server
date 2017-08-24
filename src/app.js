@@ -2,6 +2,7 @@ const logger = require('log4js').getLogger('app'),
     express  = require('express'),
     multer   = require('multer'),
     path     = require('path'),
+    fs       = require('fs'),
     app      = express();
 
 const Storage = multer.diskStorage({
@@ -12,6 +13,9 @@ const Storage = multer.diskStorage({
         break;
       case '/topics':
         cb(null, 'public/topics');
+        break;
+      case '/repairs':
+        cb(null, 'public/repairs');
         break;
       default:
         logger.debug('this path has no operation');
@@ -38,11 +42,12 @@ const Upload = multer({
   limits: Limits
 });
 
-const UploadAvatar     = Upload.single('avatar');
-const UploadTopicImage = Upload.single('topic');
-const router           = express.Router();
-const PORT             = 1339;
-const HASH             = '523b87c4419da5f9186dbe8aa90f37a3876b95e448fe2abf5bf7e4753d5aa25fe88caa7ed96d4a2e89c01f839891b74362bb2450d352f1e4c3d4f7d8d51f5c65';
+const UploadAvatar      = Upload.single('avatar');
+const UploadTopicImage  = Upload.single('topic');
+const UploadRepairImage = Upload.single('repair');
+const router            = express.Router();
+const PORT              = 1339;
+const HASH              = '523b87c4419da5f9186dbe8aa90f37a3876b95e448fe2abf5bf7e4753d5aa25fe88caa7ed96d4a2e89c01f839891b74362bb2450d352f1e4c3d4f7d8d51f5c65';
 
 app.use('/*', (req, res, next) => {
   const auth = req.headers.authorization;
@@ -63,7 +68,7 @@ app.post('/profile', function(req, res) {
       return;
     }
 
-    logger.info(`avatar: ${req.file.fieldname} was saved`);
+    logger.info(`avatar: ${req.file.filename} was saved`);
     res.send({ code: 200, status: 'SUCCESS', url: `http://${req.hostname}:${PORT}/avatars/${req.file.filename}` });
   });
 });
@@ -77,8 +82,38 @@ app.post('/topics', function(req, res) {
       return;
     }
     
-    logger.info(`topic: ${req.file.fieldname} was saved`);
+    logger.info(`topic: ${req.file.filename} was saved`);
     res.send({ code: 200, status: 'SUCCESS', url: `http://${req.hostname}:${PORT}/topics/${req.file.filename}` });
+  });
+});
+
+// // upload topic image
+app.post('/repairs', function(req, res) {
+  UploadRepairImage(req, res, (err) => {
+    if (err) {
+      logger.error(err.message);
+      res.status(200).send({ code: 500, status: 'ERROR', message: err.message });
+      return;
+    }
+    
+    logger.info(`repair: ${req.file.filename} was saved`);
+    res.send({ code: 200, status: 'SUCCESS', url: `http://${req.hostname}:${PORT}/repairs/${req.file.filename}` });
+  });
+});
+
+/**
+ * 删除图片资源。
+ * e.g DELETE /resources?type=topics&filename=123.jpg 将删除topics目录下的123.jpg文件
+ */
+app.delete('/resources', function(req, res) {
+  fs.unlink(path.join(__dirname, `../public/${req.query.type}/${req.query.filename}`), (err) => {
+    if (err) {
+      logger.error(err);
+      res.send({ code: 500, status: 'ERROR', message: err.message });
+    } else {
+      logger.info(`${req.query.type}/${req.query.filename} was deleted`);
+      res.send({ code: 200, status: 'SUCCESS' });
+    }
   });
 });
 
