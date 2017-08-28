@@ -68,7 +68,7 @@ app.post('/profile', function(req, res) {
       return;
     }
 
-    logger.info(`avatar: ${req.file.filename} was saved`);
+    logger.info(`[SAVE AVATAR]: #${req.file.filename}`);
     res.send({ code: 200, status: 'SUCCESS', url: `http://${req.hostname}:${PORT}/avatars/${req.file.filename}` });
   });
 });
@@ -82,7 +82,7 @@ app.post('/topics', function(req, res) {
       return;
     }
     
-    logger.info(`topic: ${req.file.filename} was saved`);
+    logger.info(`[SAVE TOPIC]: #${req.file.filename}`);
     res.send({ code: 200, status: 'SUCCESS', url: `http://${req.hostname}:${PORT}/topics/${req.file.filename}` });
   });
 });
@@ -96,7 +96,7 @@ app.post('/repairs', function(req, res) {
       return;
     }
     
-    logger.info(`repair: ${req.file.filename} was saved`);
+    logger.info(`[SAVE REPAIR]: #${req.file.filename}`);
     res.send({ code: 200, status: 'SUCCESS', url: `http://${req.hostname}:${PORT}/repairs/${req.file.filename}` });
   });
 });
@@ -111,7 +111,7 @@ app.delete('/resources', function(req, res) {
       logger.error(err);
       res.send({ code: 500, status: 'ERROR', message: err.message });
     } else {
-      logger.info(`${req.query.type}/${req.query.filename} was deleted`);
+      logger.info(`[DELETE ${req.query.type.toUpperCase()}]: #${req.query.filename}`);
       res.send({ code: 200, status: 'SUCCESS' });
     }
   });
