@@ -51,7 +51,7 @@ const UploadRepairImage = Upload.single('repair');
 const UploadHouseImage  = Upload.single('house');
 const router            = express.Router();
 const PORT              = 1339;
-const HASH              = '523b87c4419da5f9186dbe8aa90f37a3876b95e448fe2abf5bf7e4753d5aa25fe88caa7ed96d4a2e89c01f839891b74362bb2450d352f1e4c3d4f7d8d51f5c65';
+const HASH              = '523b87c4419da5f9186dbe8aa90f37a3876b95e448fe2a';
 
 app.use('/*', (req, res, next) => {
   const auth = req.headers.authorization;
