@@ -17,6 +17,9 @@ const Storage = multer.diskStorage({
       case '/repairs':
         cb(null, 'public/repairs');
         break;
+      case '/houses':
+        cb(null, 'public/houses');
+        break;
       default:
         logger.debug('this path has no operation');
     }
@@ -45,6 +48,7 @@ const Upload = multer({
 const UploadAvatar      = Upload.single('avatar');
 const UploadTopicImage  = Upload.single('topic');
 const UploadRepairImage = Upload.single('repair');
+const UploadHouseImage  = Upload.single('house');
 const router            = express.Router();
 const PORT              = 1339;
 const HASH              = '523b87c4419da5f9186dbe8aa90f37a3876b95e448fe2abf5bf7e4753d5aa25fe88caa7ed96d4a2e89c01f839891b74362bb2450d352f1e4c3d4f7d8d51f5c65';
@@ -73,7 +77,7 @@ app.post('/profile', function(req, res) {
   });
 });
 
-// // upload topic image
+// upload topic image
 app.post('/topics', function(req, res) {
   UploadTopicImage(req, res, (err) => {
     if (err) {
@@ -87,7 +91,7 @@ app.post('/topics', function(req, res) {
   });
 });
 
-// // upload topic image
+// upload topic image
 app.post('/repairs', function(req, res) {
   UploadRepairImage(req, res, (err) => {
     if (err) {
@@ -98,6 +102,20 @@ app.post('/repairs', function(req, res) {
     
     logger.info(`[SAVE REPAIR]: #${req.file.filename}`);
     res.send({ code: 200, status: 'SUCCESS', url: `http://${req.hostname}:${PORT}/repairs/${req.file.filename}` });
+  });
+});
+
+// upload house image
+app.post('/houses', function(req, res) {
+  UploadHouseImage(req, res, (err) => {
+    if (err) {
+      logger.error(err.message);
+      res.status(200).send({ code: 500, status: 'ERROR', message: err.message });
+      return;
+    }
+
+    logger.info(`[SAVE HOUSE]: #${req.file.filename}`);
+    res.send({ code: 200, status: 'SUCCESS', url: `http://${req.hostname}:${PORT}/houses/${req.file.filename}` });
   });
 });
 
