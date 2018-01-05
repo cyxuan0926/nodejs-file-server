@@ -8,6 +8,9 @@ const logger = require('log4js').getLogger('app'),
 const Storage = multer.diskStorage({
   destination: (req, file, cb) => {
     switch (req.path) {
+      case '/ads':
+        cb(null, 'public/ads');
+        break;
       case '/profile':
         cb(null, 'public/avatars');
         break;
@@ -45,6 +48,7 @@ const Upload = multer({
   limits: Limits
 });
 
+const UploadAdImage     = Upload.single('ad');
 const UploadAvatar      = Upload.single('avatar');
 const UploadTopicImage  = Upload.single('topic');
 const UploadRepairImage = Upload.single('repair');
@@ -74,6 +78,20 @@ app.post('/profile', function(req, res) {
 
     logger.info(`[SAVE AVATAR]: #${req.file.filename}`);
     res.send({ code: 200, status: 'SUCCESS', url: `http://${req.hostname}:${PORT}/avatars/${req.file.filename}` });
+  });
+});
+
+// upload ad image
+app.post('/ads', function(req, res) {
+  UploadTopicImage(req, res, (err) => {
+    if (err) {
+      logger.error(err.message);
+      res.status(200).send({ code: 500, status: 'ERROR', message: err.message });
+      return;
+    }
+    
+    logger.info(`[SAVE AD]: #${req.file.filename}`);
+    res.send({ code: 200, status: 'SUCCESS', url: `http://${req.hostname}:${PORT}/ads/${req.file.filename}` });
   });
 });
 
