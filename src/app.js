@@ -6,8 +6,6 @@ const logger = require('log4js').getLogger('app'),
     fs       = require('fs'),
     app      = express();
 
-app.use(cors());
-
 const Storage = multer.diskStorage({
   destination: (req, file, cb) => {
     switch (req.path) {
@@ -124,6 +122,28 @@ app.post('/repairs', function(req, res) {
     logger.info(`[SAVE REPAIR]: #${req.file.filename}`);
     res.send({ code: 200, status: 'SUCCESS', url: `http://${req.hostname}:${PORT}/repairs/${req.file.filename}` });
   });
+});
+
+// Get repairs images
+app.get('/repairs/:file_name', cors(), function(req, res, next) {
+  var options = {
+    root: __dirname + '/public/repairs/',
+    dotfiles: 'deny',
+    headers: {
+        'x-timestamp': Date.now(),
+        'x-sent': true
+    }
+  };
+
+  var fileName = req.params.file_name
+
+  res.sendFile(fileName, options, function(err) {
+    if (err) {
+      next(err);
+    } else {
+      logger.info(`[SEND]: #${fileName}`);
+    }
+  })
 });
 
 // upload house image
