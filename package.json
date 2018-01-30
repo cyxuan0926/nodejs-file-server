@@ -11,7 +11,8 @@
         "chai": "^4.1.0",
         "chai-http": "^3.0.0",
         "chai-as-promised": "^7.1.1",
-        "should": "^10.0.0"
+        "should": "^10.0.0",
+        "cors": "^2.8.4"
     },
     "main": "app.js",
     "scripts": {

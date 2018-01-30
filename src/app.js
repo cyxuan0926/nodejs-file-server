@@ -1,9 +1,12 @@
 const logger = require('log4js').getLogger('app'),
     express  = require('express'),
     multer   = require('multer'),
+    cors     = require('cors'),
     path     = require('path'),
     fs       = require('fs'),
     app      = express();
+
+app.use(cors());
 
 const Storage = multer.diskStorage({
   destination: (req, file, cb) => {
