@@ -9,20 +9,11 @@ const logger = require('log4js').getLogger('app'),
 const Storage = multer.diskStorage({
   destination: (req, file, cb) => {
     switch (req.path) {
-      case '/ads':
-        cb(null, 'public/ads');
+      case '/uuids':
+        cb(null, 'public/uuids');
         break;
-      case '/profile':
+      case '/avatars':
         cb(null, 'public/avatars');
-        break;
-      case '/topics':
-        cb(null, 'public/topics');
-        break;
-      case '/repairs':
-        cb(null, 'public/repairs');
-        break;
-      case '/houses':
-        cb(null, 'public/houses');
         break;
       default:
         logger.debug('this path has no operation');
@@ -49,11 +40,8 @@ const Upload = multer({
   limits: Limits
 });
 
-const UploadAdImage     = Upload.single('ad');
+const UploadUUID        = Upload.single('uuid');
 const UploadAvatar      = Upload.single('avatar');
-const UploadTopicImage  = Upload.single('topic');
-const UploadRepairImage = Upload.single('repair');
-const UploadHouseImage  = Upload.single('house');
 const router            = express.Router();
 const PORT              = 1339;
 const HASH              = '523b87c4419da5f9186dbe8aa90f37a3876b95e448fe2a';
@@ -68,8 +56,9 @@ app.use('/*', (req, res, next) => {
 });
 
 app.use(express.static(path.join(__dirname, '../public')));
+
 // upload avatar
-app.post('/profile', function(req, res) {
+app.post('/avatars', function(req, res) {
   UploadAvatar(req, res, (err) => {
     if (err) {
       logger.error(err.message);
@@ -82,81 +71,17 @@ app.post('/profile', function(req, res) {
   });
 });
 
-// upload ad image
-app.post('/ads', function(req, res) {
-  UploadTopicImage(req, res, (err) => {
+// upload uuid image
+app.post('/uuids', function(req, res) {
+  UploadUUID(req, res, (err) => {
     if (err) {
       logger.error(err.message);
       res.status(200).send({ code: 500, status: 'ERROR', message: err.message });
       return;
     }
     
-    logger.info(`[SAVE AD]: #${req.file.filename}`);
-    res.send({ code: 200, status: 'SUCCESS', url: `http://${req.hostname}:${PORT}/ads/${req.file.filename}` });
-  });
-});
-
-// upload topic image
-app.post('/topics', function(req, res) {
-  UploadTopicImage(req, res, (err) => {
-    if (err) {
-      logger.error(err.message);
-      res.status(200).send({ code: 500, status: 'ERROR', message: err.message });
-      return;
-    }
-    
-    logger.info(`[SAVE TOPIC]: #${req.file.filename}`);
-    res.send({ code: 200, status: 'SUCCESS', url: `http://${req.hostname}:${PORT}/topics/${req.file.filename}` });
-  });
-});
-
-// upload topic image
-app.post('/repairs', function(req, res) {
-  UploadRepairImage(req, res, (err) => {
-    if (err) {
-      logger.error(err.message);
-      res.status(200).send({ code: 500, status: 'ERROR', message: err.message });
-      return;
-    }
-    
-    logger.info(`[SAVE REPAIR]: #${req.file.filename}`);
-    res.send({ code: 200, status: 'SUCCESS', url: `http://${req.hostname}:${PORT}/repairs/${req.file.filename}` });
-  });
-});
-
-// Get repairs images
-app.get('/repairs/:file_name', cors(), function(req, res, next) {
-  var options = {
-    root: __dirname + '/public/repairs/',
-    dotfiles: 'deny',
-    headers: {
-        'x-timestamp': Date.now(),
-        'x-sent': true
-    }
-  };
-
-  var fileName = req.params.file_name
-
-  res.sendFile(fileName, options, function(err) {
-    if (err) {
-      next(err);
-    } else {
-      logger.info(`[SEND]: #${fileName}`);
-    }
-  })
-});
-
-// upload house image
-app.post('/houses', function(req, res) {
-  UploadHouseImage(req, res, (err) => {
-    if (err) {
-      logger.error(err.message);
-      res.status(200).send({ code: 500, status: 'ERROR', message: err.message });
-      return;
-    }
-
-    logger.info(`[SAVE HOUSE]: #${req.file.filename}`);
-    res.send({ code: 200, status: 'SUCCESS', url: `http://${req.hostname}:${PORT}/houses/${req.file.filename}` });
+    logger.info(`[SAVE UUID]: #${req.file.filename}`);
+    res.send({ code: 200, status: 'SUCCESS', url: `http://${req.hostname}:${PORT}/uuids/${req.file.filename}` });
   });
 });
 
