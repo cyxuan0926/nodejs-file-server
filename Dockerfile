@@ -5,6 +5,6 @@ RUN mkdir /image-server
 WORKDIR /image-server
 ADD package.json /image-server/package.json
 ADD . /image-server
-RUN npm install
+RUN npm install --registry=https://registry.npm.taobao.org
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
